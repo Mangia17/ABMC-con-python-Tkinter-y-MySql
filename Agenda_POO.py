@@ -1,8 +1,12 @@
 import tkinter as tk
+import random
+from tkinter import *
 from tkinter import messagebox
 from db import Basededatos
 
+
 # Instanciamos la base de datos como objeto
+
 db = Basededatos('store.db')
 
 # Aplicacion principal / interfaz grafica.
@@ -91,8 +95,20 @@ class Agenda(tk.Frame):
             self.master, text="Limpiar entrada", width=12, command=self.limpiar_text)
         self.btn_limpiar.grid(row=2, column=3)
 
+        self.btn_color = tk.Button(
+            self.master, text="Color Aleatorio", width=12, command=self.cambia_color)
+        self.btn_color.grid(row=2, column=4)
+
+        #Boton con Imagen
+
+        self.btn_img = PhotoImage(file="Random_color.gif")
+
+        self.btn_imagen = tk.Button(
+            self.master, image=self.btn_img, height=120, width=120, command=self.ver_imagen)
+        self.btn_imagen.grid(row=2, column=5)
+
     def populate_list(self):
-        # Delete items before update. So when you keep pressing it doesnt keep getting (show example by calling this twice)
+        """ Borra el Item antes de actualizar. De esta manera cuano se continua presionanado lo, no se sigue llenando la lista"""
         self.contactos_list.delete(0, tk.END)
         # Loop through records
         for row in db.consulta():
@@ -116,16 +132,16 @@ class Agenda(tk.Frame):
         self.limpiar_text()
         self.populate_list()
 
-    # Runs when item is selected
+    # Se ejecuta cuando el item es seleccionado
     def seleccion_item(self, event):
-        # # Create global selected item to use in other functions
+        """ Crea el item global seleccionado para usar en otras funciones """
         # global self.selected_item
         try:
-            # Get index
+            # Obtiene el indice
             index = self.contactos_list.curselection()[0]
-            # Get item_selecionado
+            # Obtiene el item_selecionado
             self.item_selecionado = self.contactos_list.get(index)
-            # print(item_selecionado) # Print tuple
+            # print(item_selecionado) # Imprime tupla
 
             # agregar texto a las entradas
             self.nombre_entry.delete(0, tk.END)
@@ -160,7 +176,30 @@ class Agenda(tk.Frame):
         self.edad_entry.delete(0, tk.END)
         self.cel_entry.delete(0, tk.END)
         self.email_entry.delete(0, tk.END)
+    
+    def cambia_color(self):
+        """Cambia color aleatoriamente, basado en la generacion random de un numero en base Hexa"""
 
+        r = lambda: random.randint(0,255)
+
+        self.color = ('#%02X%02X%02X' % (r(),r(),r()))
+
+        root.configure(background=self.color)
+
+        print(self.color)
+
+    def ver_imagen(self):
+        """Muestra una imagen determinada"""
+
+        r = lambda: random.randint(0,255)
+
+        self.color = ('#%02X%02X%02X' % (r(),r(),r()))
+
+        root.configure(background=self.color)
+
+        print(self.color)
+
+        messagebox.showinfo("Color aleatorio", message="Cambiamos de forma aleatoria el color del fondo")
 
 root = tk.Tk()
 app = Agenda(master=root)
